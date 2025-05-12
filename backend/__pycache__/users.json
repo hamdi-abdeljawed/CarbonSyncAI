@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "id": "admin-1",
+      "username": "admin",
+      "email": "admin@yaptzaki.com",
+      "password": "scrypt:32768:8:1$SvMf4n2ZVBlRpf9h$9f67e3208a891c5e9e35fcd123827845daa85f1506afc58b1298dc140fe3d4a84628ce829062a6b734e80fc7dc742825d1911906478ed77a3c96193043334596",
+      "role": "admin",
+      "created_at": "2025-05-12T08:25:58.335508",
+      "last_login": null,
+      "profile": {
+        "full_name": "Admin User",
+        "department": "IT",
+        "position": "System Administrator"
+      }
+    }
+  ]
+}

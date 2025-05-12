@@ -1,0 +1,31 @@
+.loading-bar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.loading-bar {
+  height: 3px;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.loading-bar-progress {
+  height: 100%;
+  width: 50%;
+  background: linear-gradient(90deg, transparent, var(--primary-accent), transparent);
+  animation: loading 1.5s infinite ease-in-out;
+  box-shadow: 0 0 10px var(--primary-accent);
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}

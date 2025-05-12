@@ -1,0 +1,154 @@
+/* Model Information Display Styles - Compact and Beautiful */
+.model-info-container {
+  margin-top: 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(20, 20, 30, 0.8), rgba(30, 30, 40, 0.8));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid rgba(46, 204, 113, 0.2);
+  transition: all 0.3s ease;
+}
+
+.model-info-header {
+  padding: 15px 20px;
+  background: linear-gradient(90deg, rgba(46, 204, 113, 0.1), rgba(52, 152, 219, 0.1));
+  border-bottom: 1px solid rgba(46, 204, 113, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.model-info-title {
+  margin: 0;
+  color: #2ecc71;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.model-info-collapse-all {
+  background: none;
+  border: none;
+  color: #3498db;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.model-info-collapse-all:hover {
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+.model-info-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.model-info-tab {
+  padding: 10px 15px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #bbb;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.model-info-tab:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.model-info-tab.active {
+  color: #2ecc71;
+  border-bottom-color: #2ecc71;
+  background-color: rgba(46, 204, 113, 0.05);
+}
+
+.model-info-content {
+  padding: 15px;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #2ecc71 rgba(0, 0, 0, 0.2);
+}
+
+.model-info-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.model-info-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.model-info-content::-webkit-scrollbar-thumb {
+  background-color: #2ecc71;
+  border-radius: 3px;
+}
+
+.model-info-section {
+  margin-bottom: 15px;
+}
+
+.model-info-section-title {
+  font-size: 14px;
+  color: #3498db;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.model-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.metric {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 8px 10px;
+  transition: all 0.2s ease;
+}
+
+.metric:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.metric-label {
+  font-size: 11px;
+  color: #aaa;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.metric-value.highlight {
+  color: #2ecc71;
+}
+
+.model-architecture-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #ddd;
+  margin: 0;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  border-left: 3px solid #3498db;
+}

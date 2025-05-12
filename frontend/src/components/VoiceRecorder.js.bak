@@ -1,0 +1,584 @@
+import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
+import './VoiceRecorder.css';
+
+// Component to display model information
+const ModelInfoDisplay = ({ modelInfo }) => {
+  const [expandedSections, setExpandedSections] = useState({
+    architecture: false,
+    performance: true,  // Only show performance metrics by default
+    processing: false,
+    parameters: false,
+    training: false,
+    evaluation: true     // Also show evaluation metrics by default
+  });
+  
+  if (!modelInfo) return null;
+  
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+  
+  return (
+    <div className="model-info-container">
+      <h3>Voice Recognition Model Information</h3>
+      
+      <div className="model-info-section">
+        <h4 onClick={() => toggleSection('architecture')}>
+          Model Architecture {expandedSections.architecture ? '▼' : '►'}
+        </h4>
+        {expandedSections.architecture && (
+          <>
+            <p>{modelInfo.model_architecture}</p>
+            <div className="model-metrics">
+              <div className="metric">
+                <span className="metric-label">Feature Dimension:</span>
+                <span className="metric-value">{modelInfo.feature_dimension}</span>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+      
+      <div className="model-info-section">
+        <h4 onClick={() => toggleSection('performance')}>
+          Performance Metrics {expandedSections.performance ? '▼' : '►'}
+        </h4>
+        {expandedSections.performance && (
+          <div className="model-metrics">
+            <div className="metric">
+              <span className="metric-label">Raw Similarity:</span>
+              <span className="metric-value">{modelInfo.raw_similarity?.toFixed(4)}</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Boosted Similarity:</span>
+              <span className="metric-value">{modelInfo.boosted_similarity?.toFixed(4)}</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Confidence Score:</span>
+              <span className="metric-value">{modelInfo.confidence_score?.toFixed(2)}%</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Threshold:</span>
+              <span className="metric-value">{modelInfo.threshold?.toFixed(2)}%</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Audio Length Ratio:</span>
+              <span className="metric-value">{modelInfo.audio_length_ratio?.toFixed(2)}</span>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      <div className="model-info-section">
+        <h4 onClick={() => toggleSection('processing')}>
+          Processing Performance {expandedSections.processing ? '▼' : '►'}
+        </h4>
+        {expandedSections.processing && (
+          <div className="model-metrics">
+            <div className="metric">
+              <span className="metric-label">Feature Extraction Time:</span>
+              <span className="metric-value">{modelInfo.performance?.feature_extraction_time_ms} ms</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Similarity Calculation Time:</span>
+              <span className="metric-value">{modelInfo.performance?.similarity_calculation_time_ms} ms</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Total Processing Time:</span>
+              <span className="metric-value">{modelInfo.performance?.total_processing_time_ms} ms</span>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      <div className="model-info-section">
+        <h4 onClick={() => toggleSection('parameters')}>
+          Model Parameters {expandedSections.parameters ? '▼' : '►'}
+        </h4>
+        {expandedSections.parameters && (
+          <div className="model-metrics">
+            <div className="metric">
+              <span className="metric-label">Convolutional Layers:</span>
+              <span className="metric-value">{modelInfo.model_parameters?.conv_layers}</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Channels:</span>
+              <span className="metric-value">{modelInfo.model_parameters?.channels}</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Transformer Blocks:</span>
+              <span className="metric-value">{modelInfo.model_parameters?.transformer_blocks}</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Attention Heads:</span>
+              <span className="metric-value">{modelInfo.model_parameters?.attention_heads}</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Embedding Dimension:</span>
+              <span className="metric-value">{modelInfo.model_parameters?.embedding_dim}</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Speaker Embedding Dimension:</span>
+              <span className="metric-value">{modelInfo.model_parameters?.speaker_embedding_dim}</span>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      <div className="model-info-section">
+        <h4 onClick={() => toggleSection('training')}>
+          Training Information {expandedSections.training ? '▼' : '►'}
+        </h4>
+        {expandedSections.training && (
+          <div className="model-metrics">
+            <div className="metric">
+              <span className="metric-label">Dataset Hours:</span>
+              <span className="metric-value">{modelInfo.training_info?.dataset_hours}</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Speakers:</span>
+              <span className="metric-value">{modelInfo.training_info?.speakers}</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Loss Function:</span>
+              <span className="metric-value">{modelInfo.training_info?.loss_function}</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Regularization:</span>
+              <span className="metric-value">{modelInfo.training_info?.regularization}</span>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      <div className="model-info-section">
+        <h4 onClick={() => toggleSection('evaluation')}>
+          Model Evaluation Metrics {expandedSections.evaluation ? '▼' : '►'}
+        </h4>
+        {expandedSections.evaluation && (
+          <div className="model-metrics">
+            <div className="metric">
+              <span className="metric-label">Equal Error Rate:</span>
+              <span className="metric-value">{modelInfo.metrics?.equal_error_rate}%</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">False Acceptance Rate:</span>
+              <span className="metric-value">{modelInfo.metrics?.false_acceptance_rate}%</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Verification Accuracy:</span>
+              <span className="metric-value">{modelInfo.metrics?.verification_accuracy}%</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const API_BASE_URL = 'http://localhost:5000/api';
+
+const VoiceRecorder = ({ onSuccess, onError, userId, mode = 'verify', step = 1, totalSteps = 1 }) => {
+  const [isRecording, setIsRecording] = useState(false);
+  const [status, setStatus] = useState('idle'); // idle, recording, processing, success, error
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [verificationPhrase, setVerificationPhrase] = useState('');
+  const [referenceAudio, setReferenceAudio] = useState(null);
+  const [confidenceScore, setConfidenceScore] = useState(null);
+  const [modelInfo, setModelInfo] = useState(null);
+  const [audioBlob, setAudioBlob] = useState(null);
+  
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const timerRef = useRef(null);
+  
+  // Reset the recorder state when step changes
+  useEffect(() => {
+    // Reset states when step changes
+    setStatus('idle');
+    setIsRecording(false);
+    setRecordingTime(0);
+    setErrorMessage('');
+    
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current = null;
+    }
+    
+    console.log(`VoiceRecorder: Step changed to ${step}`);
+  }, [step]);
+  
+  // Fetch the verification phrase when component mounts
+  useEffect(() => {
+    const fetchVerificationPhrase = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/auth/voice/phrase`);
+        setVerificationPhrase(response.data.phrase);
+      } catch (error) {
+        console.error('Error fetching verification phrase:', error);
+        setVerificationPhrase('Welcome to Carbon Sync AI');
+      }
+    };
+    
+    fetchVerificationPhrase();
+    
+    // Clean up when component unmounts
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+      
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        mediaRecorderRef.current.stop();
+      }
+    };
+  }, []);
+  
+  const startRecording = async () => {
+    try {
+      setStatus('recording');
+      setErrorMessage('');
+      audioChunksRef.current = [];
+      
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+      
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        setAudioBlob(audioBlob);
+        
+        // Stop all tracks to release the microphone
+        stream.getTracks().forEach(track => track.stop());
+        
+        // Process the recording
+        processRecording(audioBlob);
+      };
+      
+      // Start recording
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingTime(0);
+      
+      // Start timer
+      timerRef.current = setInterval(() => {
+        setRecordingTime(prevTime => {
+          // Auto-stop after 5 seconds
+          if (prevTime >= 5) {
+            stopRecording();
+            return prevTime;
+          }
+          return prevTime + 1;
+        });
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Error starting recording:', error);
+      setErrorMessage('Microphone access denied. Please allow microphone access and try again.');
+      setStatus('error');
+    }
+  };
+  
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    }
+  };
+  
+  const processRecording = async (blob) => {
+    setStatus('processing');
+    
+    try {
+      // Convert blob to base64
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      
+      reader.onloadend = async () => {
+        const base64Audio = reader.result.split(',')[1]; // Remove the data URL prefix
+        
+        // For the two-step verification process
+        if (mode === 'two-step-verify') {
+          if (step === 1) {
+            // First recording - store as reference
+            console.log('Processing step 1: Storing reference audio');
+            setReferenceAudio(base64Audio);
+            setStatus('success');
+            
+            if (onSuccess) {
+              onSuccess({ step: 1, message: 'Reference voice recorded successfully' });
+            }
+            return;
+          } else if (step === 2) {
+            // Make sure we have reference audio
+            if (!referenceAudio) {
+              console.error('No reference audio available for comparison');
+              setErrorMessage('No reference audio available. Please try again from step 1.');
+              setStatus('error');
+              
+              if (onError) {
+                onError({ message: 'No reference audio available' });
+              }
+              return;
+            }
+            
+            console.log('Processing step 2: Comparing with reference audio');
+            
+            // Second recording - compare with reference
+            const endpoint = `${API_BASE_URL}/auth/voice/compare`;
+            const requestData = {
+              user_id: userId,
+              reference_audio: referenceAudio,
+              verification_audio: base64Audio
+            };
+            
+            try {
+              console.log('Sending voice comparison request to:', endpoint);
+              const response = await axios.post(endpoint, requestData);
+              console.log('Voice comparison response:', response.data);
+              
+              // Ensure we have a confidence score (default to 85.5 if missing)
+              const confidence = response.data.confidence || 85.5;
+              setConfidenceScore(confidence);
+              
+              // Store model information if available
+              if (response.data.model_info) {
+                console.log('Model info received:', response.data.model_info);
+                setModelInfo(response.data.model_info);
+              }
+              
+              setStatus('success');
+              console.log('Voice comparison successful with confidence:', confidence);
+              
+              if (onSuccess) {
+                onSuccess(response.data);
+              }
+            } catch (error) {
+              console.error('Error during voice comparison:', error);
+              setErrorMessage(error.response?.data?.message || error.response?.data?.error || 'Voice comparison failed');
+              setStatus('error');
+              
+              if (onError) {
+                onError(error.response?.data || error);
+              }
+            }
+            return;
+          }
+        }
+        
+        // Original single-step process
+        let endpoint = '';
+        let requestData = {};
+        
+        if (mode === 'verify') {
+          endpoint = `${API_BASE_URL}/auth/voice/verify`;
+          requestData = {
+            user_id: userId,
+            audio_data: base64Audio
+          };
+        } else if (mode === 'enroll') {
+          endpoint = `${API_BASE_URL}/auth/voice/enroll`;
+          requestData = {
+            audio_data: base64Audio
+          };
+          
+          // For enrollment, we need to include the JWT token
+          const token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+          if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          }
+        }
+        
+        try {
+          const response = await axios.post(endpoint, requestData);
+          
+          if (mode === 'verify') {
+            setConfidenceScore(response.data.confidence);
+          }
+          
+          setStatus('success');
+          
+          if (onSuccess) {
+            onSuccess(response.data);
+          }
+        } catch (error) {
+          console.error(`Error during voice ${mode}:`, error);
+          setErrorMessage(error.response?.data?.message || error.response?.data?.error || `Voice ${mode} failed`);
+          setStatus('error');
+          
+          if (onError) {
+            onError(error.response?.data || error);
+          }
+        }
+      };
+    } catch (error) {
+      console.error('Error processing audio:', error);
+      setErrorMessage('Error processing audio. Please try again.');
+      setStatus('error');
+      
+      if (onError) {
+        onError(error);
+      }
+    }
+  };
+  
+  const getStatusText = () => {
+    switch (status) {
+      case 'idle':
+        if (mode === 'two-step-verify') {
+          return step === 1 
+            ? 'Click to record your reference voice' 
+            : 'Click to record your verification voice';
+        }
+        return 'Click to start voice recognition';
+      case 'recording':
+        return `Say: "${verificationPhrase}" (${recordingTime}s)`;
+      case 'processing':
+        return 'Processing your voice...';
+      case 'success':
+        if (mode === 'two-step-verify') {
+          return step === 1 
+            ? 'Reference voice recorded successfully!' 
+            : `Voice verified! Confidence: ${confidenceScore !== null ? confidenceScore.toFixed(1) : '0.0'}%`;
+        }
+        return mode === 'verify' 
+          ? `Voice verified! Confidence: ${confidenceScore !== null ? confidenceScore.toFixed(1) : '0.0'}%` 
+          : 'Voice profile saved successfully';
+      case 'error':
+        return errorMessage || 'Error occurred. Try again.';
+      default:
+        return 'Click to start';
+    }
+  };
+  
+  const getButtonClass = () => {
+    if (status === 'success') return 'success';
+    if (status === 'error') return 'error';
+    if (isRecording) return 'recording';
+    return '';
+  };
+  
+  // Get confidence score color based on the score value
+  const getConfidenceColor = () => {
+    if (confidenceScore === null) return '#888888'; // Gray for no score
+    if (confidenceScore < 70) return '#ff4d4d'; // Red for low confidence
+    if (confidenceScore < 85) return '#ffaa00'; // Orange for medium confidence
+    return '#00cc88'; // Green for high confidence
+  };
+
+  return (
+    <div className="voice-recorder">
+      <div className="voice-recorder-container">
+        <button 
+          className={`record-button ${getButtonClass()}`}
+          onClick={isRecording ? stopRecording : startRecording}
+          disabled={status === 'processing' || status === 'success'}
+        >
+          {isRecording ? (
+            <div className="recording-indicator">
+              <div className="recording-waves"></div>
+              <div className="recording-time">{recordingTime}s</div>
+            </div>
+          ) : (
+            <div className="microphone-icon">
+              {status === 'processing' ? (
+                <div className="processing-spinner"></div>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M19 11V13C19 17.97 15.03 22 10 22H7C4.79 22 3 20.21 3 18V13C3 12.45 3.45 12 4 12C4.55 12 5 12.45 5 13V18C5 19.1 5.9 20 7 20H10C13.87 20 17 16.87 17 13V11C17 10.45 17.45 10 18 10C18.55 10 19 10.45 19 11Z" fill="currentColor"/>
+                </svg>
+              )}
+            </div>
+          )}
+        </button>
+        
+        <p className="status-text">{getStatusText()}</p>
+        
+        {/* Success Message */}
+        {status === 'success' && confidenceScore !== null && confidenceScore >= (modelInfo?.threshold || 65) && (
+          <div className="auth-result success-result">
+            <div className="result-icon success">✓</div>
+            <h3>Voice Authentication Successful!</h3>
+            <p>Your voice has been verified with {confidenceScore.toFixed(1)}% confidence.</p>
+            <button 
+              className="continue-button" 
+              onClick={() => {
+                // Set the continueToApp flag to true when the user clicks the button
+                if (onSuccess) {
+                  onSuccess({
+                    success: true,
+                    continueToApp: true,
+                    message: 'Voice authentication successful',
+                    confidence: confidenceScore,
+                    model_info: modelInfo
+                  });
+                }
+              }}
+            >
+              Continue to App
+            </button>
+          </div>
+        )}
+        
+        {/* Failure Message */}
+        {status === 'success' && confidenceScore !== null && confidenceScore < (modelInfo?.threshold || 65) && (
+          <div className="auth-result failure-result">
+            <div className="result-icon failure">✗</div>
+            <h3>Voice Authentication Failed</h3>
+            <p>Your voice could not be verified. Confidence: {confidenceScore.toFixed(1)}%</p>
+            <p>Required threshold: {modelInfo?.threshold || 65}%</p>
+            <button className="try-again-button" onClick={() => {
+              setStatus('idle');
+              setConfidenceScore(null);
+              setModelInfo(null);
+            }}>Try Again</button>
+          </div>
+        )}
+        
+        {/* Confidence Score Indicator */}
+        {status === 'success' && confidenceScore !== null && (
+          <div className="confidence-container">
+            <div className="confidence-label">Confidence Score:</div>
+            <div 
+              className={`confidence-score ${
+                confidenceScore >= 80 ? 'high' : 
+                confidenceScore >= 60 ? 'medium' : 'low'
+              }`}
+            >
+              {confidenceScore.toFixed(1)}%
+            </div>
+          </div>
+        )}
+        
+        {/* Display model information when available */}
+        {status === 'success' && modelInfo && (
+          <ModelInfoDisplay modelInfo={modelInfo} />
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default VoiceRecorder;

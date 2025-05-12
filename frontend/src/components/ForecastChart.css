@@ -1,0 +1,284 @@
+.forecast-chart-container {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.chart-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+}
+
+.chart-container {
+  position: relative;
+  height: 400px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Simple Chart Container */
+.simple-chart-container {
+  position: relative;
+  display: flex;
+  height: 300px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.y-axis {
+  width: 50px;
+  position: relative;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding-right: 5px;
+}
+
+.y-label {
+  position: absolute;
+  right: 5px;
+  transform: translateY(50%);
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.x-axis {
+  position: absolute;
+  bottom: -25px;
+  left: 50px;
+  right: 0;
+  height: 25px;
+}
+
+.x-label {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  color: #ccc;
+  white-space: nowrap;
+}
+
+.chart-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Data points and lines */
+.data-point {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  cursor: pointer;
+}
+
+.data-point:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  z-index: 100;
+}
+
+.actual-point {
+  background-color: #00FFFF;
+  box-shadow: 0 0 5px #00FFFF;
+}
+
+.forecast-point {
+  background-color: #FF00FF;
+  box-shadow: 0 0 5px #FF00FF;
+}
+
+.optimized-point {
+  background-color: #00FF00;
+  box-shadow: 0 0 5px #00FF00;
+}
+
+.data-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.confidence-interval {
+  position: absolute;
+  width: 1px;
+  background-color: rgba(255, 0, 255, 0.2);
+  transform: translateX(-50%);
+}
+
+/* Legend */
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+
+.actual-color {
+  background-color: #00FFFF;
+  box-shadow: 0 0 5px #00FFFF;
+}
+
+.forecast-color {
+  background-color: #FF00FF;
+  box-shadow: 0 0 5px #FF00FF;
+}
+
+.optimized-color {
+  background-color: #00FF00;
+  box-shadow: 0 0 5px #00FF00;
+}
+
+.legend-label {
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+/* Impact Factors Section */
+.impact-factors {
+  margin-top: 30px;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border-left: 4px solid #00FFFF;
+}
+
+.impact-factors h4 {
+  color: #fff;
+  margin-bottom: 15px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+}
+
+.impact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.impact-item {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.impact-item:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  transform: translateX(5px);
+}
+
+.impact-rank {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FF00FF;
+  color: #000;
+  border-radius: 50%;
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.impact-info {
+  flex: 1;
+}
+
+.impact-name {
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.impact-score {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.impact-value {
+  color: #00FFFF;
+  font-weight: bold;
+}
+
+/* Custom tooltip styling */
+.custom-tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  pointer-events: none;
+  z-index: 10;
+  font-family: 'Roboto', sans-serif;
+  border: 1px solid rgba(0, 255, 255, 0.5);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+  max-width: 200px;
+  transition: opacity 0.3s ease;
+}
+
+.tooltip-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #00FFFF;
+}
+
+.tooltip-value {
+  font-size: 13px;
+  margin-bottom: 3px;
+}
+
+/* Ensure chart points are fully visible */
+canvas {
+  margin: 20px 0;
+}
+
+@keyframes glowEffect {
+  0% { text-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
+  50% { text-shadow: 0 0 15px rgba(0, 255, 255, 0.8); }
+  100% { text-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
+}
+
+@media (max-width: 768px) {
+  .impact-list {
+    flex-direction: column;
+  }
+}

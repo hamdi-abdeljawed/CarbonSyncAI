@@ -1,0 +1,32 @@
+{
+  "users": [
+    {
+      "id": "admin-1",
+      "username": "admin",
+      "email": "admin@yaptzaki.com",
+      "password": "scrypt:32768:8:1$F3bDXF9xFLpV7ElS$4f9b9264e61dccc3d2279f40149516ea25e1027225359f0e76f5270ac638ec48d707e5d39eb8a7f820ed56fef5c60bcff0a47c06714826138d45f9e09b4ed0a2",
+      "role": "admin",
+      "created_at": "2025-05-02T12:56:25.215208",
+      "last_login": null,
+      "profile": {
+        "full_name": "Admin User",
+        "department": "IT",
+        "position": "System Administrator"
+      }
+    },
+    {
+      "id": "user-2",
+      "username": "hamdi",
+      "email": "hamdiabdeljawed228@gmail.com",
+      "password": "scrypt:32768:8:1$9bTEZ5JlBoGuK5pN$58eb2ff5c18cf03908f7746482dbf5d0884c9b6164c942ea1e342832c13cc96a38d498ede28e9e8a65a2efc67e21d05ae9b315fb25650fb683a76b7c4d3b0d39",
+      "role": "user",
+      "created_at": "2025-05-02T13:05:50.971301",
+      "last_login": "2025-05-09T09:06:35.792568",
+      "profile": {
+        "full_name": "",
+        "department": "",
+        "position": ""
+      }
+    }
+  ]
+}
